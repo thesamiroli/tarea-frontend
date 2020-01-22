@@ -10,10 +10,16 @@ export class Login extends Component {
 
     this.state = {
       buttonClicked: false,
-      email: "",
-      password: "",
-      passwordErrorMessage: "",
-      emailErrorMessage: ""
+      email: {
+        value: "",
+        isInvalid: false,
+        invalidMessage: ""
+      },
+      password: {
+        value: "",
+        isInvalid: false,
+        invalidMessage: ""
+      }
     };
   }
 
@@ -51,11 +57,12 @@ export class Login extends Component {
               <Form.Control
                 type="email"
                 placeholder="email..."
-                value={this.state.email}
+                value={this.state.email.value}
                 onChange={this.onChangeHandler}
+                isInvalid={this.state.email.isInvalid}
               />
               <Form.Control.Feedback type="invalid">
-                {this.state.emailErrorMessage}
+                {this.state.email.invalidMessage}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -64,11 +71,12 @@ export class Login extends Component {
               <Form.Control
                 type="password"
                 placeholder="password..."
-                value={this.state.password}
+                value={this.state.password.value}
                 onChange={this.onChangeHandler}
+                isInvalid={this.state.password.isInvalid}
               />
               <Form.Control.Feedback type="invalid">
-                {this.state.passwordErrorMessage}
+                {this.state.password.invalidMessage}
               </Form.Control.Feedback>
             </Form.Group>
             <Button

@@ -10,11 +10,17 @@ export class Register extends Component {
 
     this.state = {
       buttonClicked: false,
-      userNameErrorMessage: "",
-      emailErrorMessage: "",
-      email: "",
-      password: "",
-      username: ""
+      email: {
+        value: "",
+        isInvalid: false,
+        invalidMessage: ""
+      },
+      username: {
+        value: "",
+        isInvalid: false,
+        invalidMessage: ""
+      },
+      password: ""
     };
   }
 
@@ -45,7 +51,7 @@ export class Register extends Component {
       <div className="register-container">
         <div className="register-card">
           <div className="logo-holder">
-            <i class="fas fa-tasks logo-icon"></i>tarea
+            <i className="fas fa-tasks logo-icon"></i>tarea
           </div>
           <Form>
             <Form.Group controlId="email">
@@ -53,11 +59,12 @@ export class Register extends Component {
               <Form.Control
                 type="email"
                 placeholder="email..."
-                value={this.state.email}
+                value={this.state.email.value}
                 onChange={this.onChangeHandler}
+                isInvalid={this.state.email.isInvalid}
               />
               <Form.Control.Feedback type="invalid">
-                {this.state.emailErrorMessage}
+                {this.state.email.invalidMessage}
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -66,11 +73,12 @@ export class Register extends Component {
               <Form.Control
                 type="text"
                 placeholder="username..."
-                value={this.state.username}
+                value={this.state.username.value}
                 onChange={this.onChangeHandler}
+                isInvalid={this.state.username.isInvalid}
               />
               <Form.Control.Feedback type="invalid">
-                {this.state.userNameErrorMessage}
+                {this.state.username.invalidMessage}
               </Form.Control.Feedback>
             </Form.Group>
 
