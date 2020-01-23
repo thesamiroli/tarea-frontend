@@ -6,13 +6,18 @@ import { Login } from "./routes/Login";
 import { Register } from "./routes/Register";
 import { Dashboard } from "./routes/Dashboard";
 import { Todo } from "./routes/Todo";
+import { toast } from "react-toastify";
 
 class App extends Component {
   render() {
+    toast.configure();
     return (
       <Router>
         <Switch>
           <Route exact path="/">
+            <Dashboard />
+          </Route>
+          <Route exact path="/dashboard">
             <Dashboard />
           </Route>
           <Route exact path="/login">
