@@ -50,11 +50,7 @@ export class Dashboard extends Component {
       });
   }
 
-  onDeleteHandler = value => {
-    console.log("dv", value);
-  };
-
-  onTodoClickHandler(value) {
+  onCheckHandler(value) {
     console.log("cv", value);
 
     axios({
@@ -80,6 +76,12 @@ export class Dashboard extends Component {
     }
     this.setState({ todos: tempItems });
   }
+
+  onEditHandler(value) {}
+
+  onDeleteHandler = value => {
+    console.log("dv", value);
+  };
 
   getItemsToDisplay(tab) {
     console.log("Tab : ", tab);
@@ -164,10 +166,13 @@ export class Dashboard extends Component {
                       key={index}
                       data={value}
                       onDelete={event => {
-                        this.onDeleteHandler(value, index, event);
+                        this.onDeleteHandler(value);
                       }}
-                      onClick={event => {
-                        this.onTodoClickHandler(value, index, event);
+                      onCheck={event => {
+                        this.onCheckHandler(value);
+                      }}
+                      onEdit={event => {
+                        this.onEditHandler(value);
                       }}
                     />
                   );
