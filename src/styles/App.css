@@ -5,14 +5,16 @@
 }
 
 .login-container,
-.register-container {
+.register-container,
+.dashboard-container {
   background-color: #98fb98;
   height: 100vh;
   padding: 0% 2%;
 }
 
 .login-card,
-.register-card {
+.register-card,
+.dashboard-card {
   border-radius: 10px;
   margin: 0px auto;
   width: 70%;
@@ -23,6 +25,7 @@
   margin-bottom: 30px;
   font-weight: bold;
   font-size: 18px;
+  overflow-y: auto;
 }
 
 button {

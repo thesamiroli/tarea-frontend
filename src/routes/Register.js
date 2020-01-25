@@ -40,7 +40,7 @@ export class Register extends Component {
       })
       .then(response => {
         console.log(response);
-        if (response.status == 200) {
+        if (response.status === 200) {
           toast.success("User successfully created. Redirected to Login page");
           this.setState({
             isRegistrationComplete: true
