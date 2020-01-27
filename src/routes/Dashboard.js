@@ -4,8 +4,18 @@ import { toast } from "react-toastify";
 import { Redirect } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/Dashboard.css";
-import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
+import {
+  Form,
+  InputGroup,
+  Tab,
+  Tabs,
+  ButtonToolbar,
+  Button
+} from "react-bootstrap";
 import ListItem from "../components/ListItem";
+import emptyList from "../assets/images/emptyList.png";
+import AddTodo from "../components/AddTodo";
+import FAB from "../components/FAB";
 
 export class Dashboard extends Component {
   constructor() {
@@ -16,17 +26,9 @@ export class Dashboard extends Component {
       content: "",
       isAuthorized: true,
       userId: "",
-      todos: [
-        {
-          title: "ok",
-          checked: true
-        },
-        {
-          title: "not ok",
-          checked: false
-        }
-      ],
-      currentTab: "all"
+      todos: [],
+      currentTab: "all",
+      showModal: false
     };
   }
   componentDidMount() {
@@ -50,7 +52,7 @@ export class Dashboard extends Component {
       });
   }
 
-  onCheckHandler(value) {
+  onCheckHandler = value => {
     console.log("cv", value);
 
     axios({
@@ -70,20 +72,38 @@ export class Dashboard extends Component {
 
     let tempItems = this.state.todos;
     for (let i = 0; i < tempItems.length; i++) {
-      if (tempItems[i]._id == value._id) {
+      if (tempItems[i]._id === value._id) {
         tempItems[i].checked = !tempItems[i].checked;
       }
     }
     this.setState({ todos: tempItems });
-  }
-
-  onEditHandler(value) {}
-
-  onDeleteHandler = value => {
-    console.log("dv", value);
   };
 
-  getItemsToDisplay(tab) {
+  onEditHandler = value => {
+    console.log("Editing functionality yet to be implemented");
+  };
+
+  onDeleteHandler = value => {
+    console.log("Deleting functionality yet to be implemented");
+
+    axios({
+      method: "delete",
+      url: "/api/todos/" + value._id,
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("authorization")
+      }
+    })
+      .then(response => {
+        console.log("Response", response);
+      })
+      .catch(err => {});
+    let tempItems = this.state.todos.filter(
+      (tempValue, index) => value._id != tempValue._id
+    );
+    this.setState({ todos: tempItems });
+  };
+
+  getItemsToDisplay = tab => {
     console.log("Tab : ", tab);
     let tempItems = "";
     if (tab === "all") {
@@ -106,8 +126,13 @@ export class Dashboard extends Component {
       );
       return searchedItems;
     }
+    console.log("tempItems", tempItems);
     return tempItems;
-  }
+  };
+
+  getCurrentTab = () => {
+    return this.state.currentTab;
+  };
 
   tabSelectedHandler = selectedTab => {
     this.setState({
@@ -121,12 +146,28 @@ export class Dashboard extends Component {
     });
   };
 
+  onAddIconClick = () => {
+    this.setState({
+      showModal: true
+    });
+  };
+
+  hideModal = () => {
+    this.setState({
+      showModal: false
+    });
+  };
+
   render() {
     if (this.state.isAuthorized) {
       console.log("Current tab from State, ", this.state.currentTab);
       let itemsToDisplay = this.getItemsToDisplay(this.state.currentTab);
+      {
+        console.log(this.state);
+      }
       return (
         <div className="dashboard-container">
+          <AddTodo show={this.state.showModal} handleClose={this.hideModal} />
           <div className="dashboard-card">
             <div className="header-container">
               <div className="dashboard-logo-holder">
@@ -149,6 +190,7 @@ export class Dashboard extends Component {
                 </InputGroup>
               </div>
             </div>
+
             <div className="body-container">
               <Tabs
                 defaultActiveKey="all"
@@ -160,26 +202,33 @@ export class Dashboard extends Component {
                 <Tab eventKey="remaining" title="Remaining" />
               </Tabs>
               <div className="list-holder">
-                {itemsToDisplay.map((value, index) => {
-                  return (
-                    <ListItem
-                      key={index}
-                      data={value}
-                      onDelete={event => {
-                        this.onDeleteHandler(value);
-                      }}
-                      onCheck={event => {
-                        this.onCheckHandler(value);
-                      }}
-                      onEdit={event => {
-                        this.onEditHandler(value);
-                      }}
-                    />
-                  );
-                })}
+                {itemsToDisplay.length > 0 ? (
+                  itemsToDisplay.map((value, index) => {
+                    return (
+                      <ListItem
+                        key={index}
+                        data={value}
+                        onDelete={event => {
+                          this.onDeleteHandler(value);
+                        }}
+                        onCheck={event => {
+                          this.onCheckHandler(value);
+                        }}
+                        onEdit={event => {
+                          this.onEditHandler(value);
+                        }}
+                      />
+                    );
+                  })
+                ) : (
+                  <div className="empty-list">
+                    <img src={emptyList} />
+                  </div>
+                )}
               </div>
             </div>
           </div>
+          <FAB onClick={this.onAddIconClick} />
         </div>
       );
     } else {

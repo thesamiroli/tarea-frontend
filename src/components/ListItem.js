@@ -3,6 +3,10 @@ import "../styles/ListItem.css";
 import { Card } from "react-bootstrap";
 
 export class ListItem extends Component {
+  dateParser(date) {
+    return "Created at: " + date.slice(4, 24);
+  }
+
   render() {
     let checkItem = this.props.data.checked ? (
       <i className="fas fa-check-circle" onClick={this.props.onCheck}></i>
@@ -19,12 +23,12 @@ export class ListItem extends Component {
     let editIcon = (
       <i className="fas fa-pen edit-icon" onClick={this.props.onEdit}></i>
     );
-    let className = this.props.data.checked ? "list-item checked" : "list-item";
+    let checked = this.props.data.checked ? "checked" : "not-checked";
 
     return (
-      <div className={className}>
+      <div className="list-item">
         <Card>
-          <Card.Body>
+          <Card.Body className={checked}>
             <Card.Title>{this.props.data.title}</Card.Title>
             <Card.Text>{this.props.data.content}</Card.Text>
             <div className="todo-tools">
@@ -33,6 +37,9 @@ export class ListItem extends Component {
               {deleteIcon}
             </div>
           </Card.Body>
+          <Card.Footer className="text-muted">
+            {this.dateParser(this.props.data.createdAt)}
+          </Card.Footer>
         </Card>
       </div>
     );
