@@ -32,6 +32,7 @@ export class Register extends Component {
 
   onSubmitClick = event => {
     event.preventDefault();
+
     axios
       .post("/users/register", {
         email: this.state.email.value,

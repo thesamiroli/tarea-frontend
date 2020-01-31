@@ -4,14 +4,7 @@ import { toast } from "react-toastify";
 import { Redirect } from "react-router-dom";
 import "../styles/App.css";
 import "../styles/Dashboard.css";
-import {
-  Form,
-  InputGroup,
-  Tab,
-  Tabs,
-  ButtonToolbar,
-  Button
-} from "react-bootstrap";
+import { Form, InputGroup, Tab, Tabs } from "react-bootstrap";
 import ListItem from "../components/ListItem";
 import emptyList from "../assets/images/emptyList.png";
 import AddTodo from "../components/AddTodo";
@@ -52,9 +45,28 @@ export class Dashboard extends Component {
       });
   }
 
-  onCheckHandler = value => {
-    console.log("cv", value);
+  getTodosAgain() {
+    axios({
+      method: "get",
+      url: "/api/todos",
+      headers: {
+        authorization: "Bearer " + localStorage.getItem("authorization")
+      }
+    })
+      .then(response => {
+        this.setState({
+          todos: response.data
+        });
+      })
+      .catch(err => {
+        toast.error("Please Login again");
+        this.setState({
+          isAuthorized: false
+        });
+      });
+  }
 
+  onCheckHandler = value => {
     axios({
       method: "patch",
       url: "/api/todos/" + value._id,
@@ -68,7 +80,9 @@ export class Dashboard extends Component {
       .then(response => {
         console.log("Response", response);
       })
-      .catch(err => {});
+      .catch(err => {
+        console.log("Error", err);
+      });
 
     let tempItems = this.state.todos;
     for (let i = 0; i < tempItems.length; i++) {
@@ -78,14 +92,12 @@ export class Dashboard extends Component {
     }
     this.setState({ todos: tempItems });
   };
-
+  
   onEditHandler = value => {
     console.log("Editing functionality yet to be implemented");
   };
 
   onDeleteHandler = value => {
-    console.log("Deleting functionality yet to be implemented");
-
     axios({
       method: "delete",
       url: "/api/todos/" + value._id,
@@ -98,7 +110,7 @@ export class Dashboard extends Component {
       })
       .catch(err => {});
     let tempItems = this.state.todos.filter(
-      (tempValue, index) => value._id != tempValue._id
+      (tempValue, index) => value._id !== tempValue._id
     );
     this.setState({ todos: tempItems });
   };
@@ -156,15 +168,12 @@ export class Dashboard extends Component {
     this.setState({
       showModal: false
     });
+    this.getTodos();
   };
 
   render() {
     if (this.state.isAuthorized) {
-      console.log("Current tab from State, ", this.state.currentTab);
       let itemsToDisplay = this.getItemsToDisplay(this.state.currentTab);
-      {
-        console.log(this.state);
-      }
       return (
         <div className="dashboard-container">
           <AddTodo show={this.state.showModal} handleClose={this.hideModal} />
@@ -222,7 +231,7 @@ export class Dashboard extends Component {
                   })
                 ) : (
                   <div className="empty-list">
-                    <img src={emptyList} />
+                    <img src={emptyList} alt="No Todos" />
                   </div>
                 )}
               </div>
